@@ -1,0 +1,132 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+h1 {
+    margin-left: 25px;
+    margin-right: 50px;
+}
+
+h3 {
+    font-size: 14pt;
+}
+
+#top-menu {
+    background-color: #008675;
+    width: 100%;
+    color: #ffffff;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.menu-item {
+    font-size: 14pt;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    margin: 5px;
+}
+
+.menu-item:hover {
+    background-color: #ffffff55;
+}
+
+.menu-item.selected-item {
+    background-color: #ffffff;
+    color:  #142062;
+}
+
+#content-centre {
+    display: flex;
+    justify-content: center;
+}
+
+.screen {
+    width: 1200px;
+    display: none;
+}
+
+.chart-container {
+    width: 700px;
+    height: 500px;
+}
+
+#ex-3-y-label, #ex-4-y-label {
+    display: flex;
+    font-size: 10pt;
+    align-items: center;
+    height: 500px;
+    margin-left: 5px;
+}
+
+.hex-container {
+    height: 150px;
+    width: 150px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+ }
+ 
+ .hex-container:hover {
+     filter: saturate(75%);
+ }
+ 
+ .hex {
+     height: 150px;
+     width: 150px;
+     -webkit-clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
+     clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
+     background-color: #ff914d;
+     color: #ffffff44;
+     font-size: 100px;
+   }
+ 
+ .hex.positive {
+     background-color: #00bf63;
+ }
+ 
+ .hex.negative {
+     background-color: #ff3131;
+ }
+ 
+ .hex-label {
+     position: absolute;
+     color: #ffffff;
+     font-size: 13pt;
+     line-height: 1em;
+     padding: 5%;
+     font-weight: bold;
+ }
+
+ #ex-4-hex-row {
+    justify-content: center;
+ }
+
+ .blue-box {
+    background-color: #142062;
+    color: #ffffff;
+    padding: 10px;
+    border-radius: 25px;
+    height: 40px;
+ }
+ 
+ #ex-4-important {
+    width: 800px;
+    margin-left: 20px;
+    margin-bottom: 50px;
+ }
+
+ .grey-box {
+    background-color: #dddddd;
+    width: 350px;
+    padding: 20px;
+    height: 200px;
+    border-radius: 25px;
+    margin-left: 20px;
+ }

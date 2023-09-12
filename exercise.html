@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>PfG Coding Session 3</title>
+
+    <script src="https://cdn.jsdelivr.net/gh/jquery/jquery@3.4.1/dist/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/gh/twbs/bootstrap@v4.5.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/gh/twbs/bootstrap@v4.5.2/dist/js/bootstrap.min.js"></script>
+
+    <script src="https://kit.fontawesome.com/ee3848f0f5.js" crossorigin="anonymous"></script>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"></script>
+
+    <link rel = "stylesheet" href = "styles.css">
+    <script src = "caring-society-data.js"></script>
+
+</head>
+<body>
+
+    <div id = "top-menu" class = "row">
+        <h1>PfG Coding Session 3</h1>
+        <div id = "ex-1-btn" class = "menu-item selected-item">Exercise 1</div>
+        <div id = "ex-2-btn" class = "menu-item">Exercise 2</div>
+        <div id = "ex-3-btn" class = "menu-item">Exercise 3</div>
+        <div id = "ex-4-btn" class = "menu-item">Exercise 4</div>
+        
+    </div>
+
+    <a href = "solution.html">Click to see Solution</a>
+
+    <div id = "content-centre">        
+
+        <div id = "ex-1-scrn" class = "screen" style = "display: block;">
+            <h2>Exercise 1: Plotting a line chart</h2>
+
+            <p>Due to the structure of the data on the data portal, the simplest charts to plot are those that contain only an NI series. In this exercise we will:</p>
+
+            <ol>
+                <li>Extract the data for the <a href = "https://ppdata.nisra.gov.uk/table/INDEXSALENI" target = "_blank">External Sales Rate</a> indicator from the NISRA pre-production Data Portal </li>
+                <li>In the canvas element below with the id "ex-1-chart" we will plot a line chart of this indicator over time</li>
+            </ol>            
+
+            <canvas id = "ex-1-chart"></canvas>
+
+            <script>
+                async function ex_1_chart(matrix) {
+                    api_url = "https://ppws-data.nisra.gov.uk/public/api.restful/PxStat.Data.Cube_API.ReadDataset/" + matrix + "/JSON-stat/2.0/en"
+
+                     // Fetch data and store in object fetched_data
+                    const response = await fetch(api_url);
+                    const fetched_data = await response.json();
+                    const {value, label, dimension} = fetched_data;
+
+                }
+
+
+            </script>
+
+            <p>Try changing the matrix that is called inside the <em>ex_1_chart()</em> function above to another matrix that uses NI data. For example:</p>
+
+            <ul>
+                <li><a href = "https://ppdata.nisra.gov.uk/table/INDADSCNI" target ="_blank">Adult social care:</a> INDADSCNI</li>
+                <li><a href = "https://ppdata.nisra.gov.uk/table/INDGREENHGNI" target ="_blank">Greenhouse gas emissions:</a> INDGREENHGNI</li>
+            </ul>
+
+        </div>
+
+        <div id = "ex-2-scrn" class = "screen">
+            <h2>Exercise 2: Extracting NI data from a larger dataset</h2>
+
+            <p>Many of the indicators contain data broken down by Equality Groups or by a geography. If we try to plot the chart for one of these indicators as we did in Exercise 1 the wrong values are displayed. With these data sets we need to first extract the Northern Ireland series. In this exercise we will:</p>
+
+            <ol>
+                <li>Extract the data for the <a href = "https://ppdata.nisra.gov.uk/table/INDECONINACTEQ" target = "_blank">Economic inactivity</a> indicator from the NISRA pre-production Data Portal </li>
+                <li>From the data we will extract only the Northern Ireland series of values</li>
+                <li>In the canvas element below with the id "ex-2-chart" we will plot a line chart of this indicator over time</li>
+            </ol>            
+
+            <canvas id = "ex-2-chart"></canvas>
+
+            <script>
+                async function ex_2_chart(matrix) {
+                    api_url = "https://ppws-data.nisra.gov.uk/public/api.restful/PxStat.Data.Cube_API.ReadDataset/" + matrix + "/JSON-stat/2.0/en"
+
+                     // Fetch data and store in object fetched_data
+                    const response = await fetch(api_url);
+                    const fetched_data = await response.json();
+                    const {value, label, dimension} = fetched_data;
+
+                    years = dimension["TLIST(A1)"].category.index; // All years present in data (x axis values)
+
+                    const data = {
+                        labels: years,
+                        datasets: [{
+                            label: label.replace("Indicator - ", ""),
+                            data: value // Instead of "value" as seen in Exercise 1
+                        }]
+                    }
+
+                    const config = {
+                        type: "line",
+                        data: data
+                    }
+
+                    new Chart (id = "ex-2-chart",
+                        config)
+
+                }
+
+                ex_2_chart("INDECONINACTEQ");
+
+            </script>
+
+            <p>Try changing the matrix that is called inside the <em>ex_2_chart()</em> function above to another matrix that uses NI data. For example:</p>
+
+            <ul>
+                <li><a href = "https://ppdata.nisra.gov.uk/table/INDRECWSTELGD" target ="_blank">Recycled Waste:</a> INDRECWSTELGD</li>
+                <li><a href = "https://ppdata.nisra.gov.uk/table/INDCRIMEEQ" target ="_blank">Crime prevalence rate:</a> INDCRIMEEQ</li>
+            </ul>
+
+        </div>
+
+        <div id = "ex-3-scrn" class = "screen">
+            <h2>Exercise 3: Styling a chart</h2>
+
+            <p>Now we will use chart.js to style our graph by making the following changes:</p>
+
+            <ol>
+                <li>Make the y-axis always start at zero</li>
+                <li>Remove the legend</li>
+                <li>Colour the line and points black</li>
+                <li>Resize the chart to be 700px wide and 500px tall</li>
+                <li>Remove the vertical gridlines</li>
+                <li>Make the tooltip show data at the closest point to the cursor</li>
+                <li>Display a title and axis label using metadata from the dataportal</li>
+            </ol>            
+
+
+            <h3 id = "ex-3-title"></h3>
+            <div class = "row">
+                <div id = "ex-3-y-label"></div>
+                <canvas id = "ex-3-chart"></canvas>
+            </div>
+
+            <script>
+                async function ex_3_chart(matrix) {
+                    api_url = "https://ppws-data.nisra.gov.uk/public/api.restful/PxStat.Data.Cube_API.ReadDataset/" + matrix + "/JSON-stat/2.0/en"
+
+                     // Fetch data and store in object fetched_data
+                    const response = await fetch(api_url);
+                    const fetched_data = await response.json();
+                    const {value, label, dimension} = fetched_data;
+
+                    years = dimension["TLIST(A1)"].category.index;
+                    groups = Object.values(dimension)[2].category.index;
+
+                    var num_groups = groups.length;     // The number of groups
+                    var NI_position = groups.indexOf("N92000002");  // The position of Northern Ireland in the list of groups
+
+                    var data_series = []; // Loop below will generate array of y-axis values
+
+                    for (let i = 0; i < value.length; i ++) {
+                        if (i % num_groups == NI_position) {
+                            data_series.push(value[i]);
+                        }
+                    }
+
+                    const data = {
+                        labels: years,
+                        datasets: [{
+                            label: label.replace("Indicator - ", ""),
+                            data: data_series
+                        }]
+                    }
+
+                    const config = {
+                        type: "line",
+                        data: data
+                    }
+
+                    new Chart (id = "ex-3-chart",
+                        config)
+
+                }
+
+                ex_3_chart("INDECONINACTEQ");
+
+            </script>
+
+        </div>
+
+        <div id = "ex-4-scrn" class = "screen">
+            <h2>Exercise 4: Navigating between charts</h2>
+
+            <p>In this exercise we will use the attached script "caring-society-data.js". It is a shortened version of the "domains-data.js" script used in the main dashboard, containing only the indicators which fall under Caring Society.</p>
+
+            <p>In this exercise we will:</p>
+
+            <ol>
+                <li>First generate a row of hexagons which are coloured according to the performance of the indicator</li>
+                <li>Plot the charts for each of the indicators that are in the data set</li>
+                <li>Use the hexagons we generated to display the correct information when clicked on.</li>
+            </ol>
+
+            <div id = "ex-4-hex-row" class = "row"></div>
+
+            <div id = "indicator-scrn" style = "display: none">
+
+                <div class = "row" style = "margin-top: 50px;">
+                    <div class = "blue-box">Why is this indicator important?</div>
+                    <div id = "ex-4-important"></div>
+                </div>
+
+                <h3 id = "ex-4-title"></h3>
+                <div class = "row">
+                    <div id = "ex-4-y-label"></div>
+                    <div id = "ex-4-charts"></div>
+                    <div class = "grey-box">
+                        <strong>Source:</strong>
+                        <div id = "source-info"></div>
+                        <strong>What is this telling us?</strong>
+                        <div id = "telling"></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <script>
+                
+                async function ex_4_chart() {
+
+                    let indicators = Object.keys(domains_data["Caring Society"].indicators); // An array containing the names of the indicators
+
+                    // Loop through the indicators
+                    for (let i = 0; i < indicators.length; i ++) {
+
+                        // The object key for each indicator
+                        indicator = domains_data["Caring Society"].indicators[indicators[i]];                        
+
+                        // Use NI data if listed, if not use EQ then LGD
+                        if (indicator.data.NI != "") {
+                            matrix = indicator.data.NI;
+                        } else if (indicator.data.EQ != "") {
+                            matrix = indicator.data.EQ;
+                        } else {
+                            matrix = indicator.data.LGD;
+                        }
+
+                        api_url = "https://ppws-data.nisra.gov.uk/public/api.restful/PxStat.Data.Cube_API.ReadDataset/" + matrix + "/JSON-stat/2.0/en"
+
+                        // Fetch data and store in object fetched_data
+                        const response = await fetch(api_url);
+                        const fetched_data = await response.json();
+                        const {value, label, dimension} = fetched_data;
+
+                        years = dimension["TLIST(A1)"].category.index;
+                        groups = Object.values(dimension)[2].category.index;
+
+                        var num_groups = groups.length;     // The number of groups
+                        var NI_position = groups.indexOf("N92000002");  // The position of Northern Ireland in the list of groups
+
+                        var data_series = []; // Loop below will generate array of y-axis values
+
+                        for (let j = 0; j < value.length; j ++) {
+                            if (j % num_groups == NI_position) {
+                                data_series.push(value[j]);
+                            }
+                        }                        
+
+                        // Create divs to house each hexagon in
+                        // Each hexagon needs a container div that contains separate divs for the hexagon and its text label
+                        hex_container = document.createElement("div");
+                        hex_container.classList.add("hex-container");
+                        hex_container.id = matrix + "-hex"
+
+                        hex = document.createElement("div");
+                        hex.classList.add("hex");        
+
+                        change = data_series.slice(-1) - data_series[years.indexOf(indicator.base_year)]; // Calculate change based on current year vs base-year
+                        ci = indicator.ci;
+                        improvement = indicator.improvement;
+
+                        // Colour hexagon and place arrow icon inside it based on change
+                        if ((change > ci & improvement == "increase") || (change < (ci * -1) & improvement == "decrease")) {
+                            
+                        } else if ((change < (ci * -1) & improvement == "increase") || (change > ci & improvement == "decrease")) {
+                            
+                        } else {
+                            
+                        }
+
+                        // hex div appened to container
+                        hex_container.appendChild(hex);
+
+                        // Hex label extracts text and places it in hex container
+                        hex_label = document.createElement("div");
+                        hex_label.classList.add("hex-label");
+                        hex_label.textContent = indicators[i];
+                        hex_container.appendChild(hex_label);
+
+                        // Hex container then appened to hex row on page
+                        document.getElementById("ex-4-hex-row").appendChild(hex_container);
+
+                        // A container div is created for the chart and then hidden
+                        container = document.createElement("div");
+                        container.classList.add("chart-container");
+                        container.id = matrix + "-container";
+                        container.style.display = "none"
+
+                        // A canvas element is created 
+                        canvas = document.createElement("canvas");
+                        canvas.id = matrix + "-chart"
+                        container.appendChild(canvas);
+
+                        // Chart containers are placed on page
+                        document.getElementById("ex-4-charts").appendChild(container);
+
+                        // Chart created as in exercise 3
+                        const data = {
+                            labels: years,
+                            datasets: [{
+                                label: label.replace("Indicator - ", ""),
+                                data: data_series,
+                                borderColor: "#000000",
+                                pointBackgroundColor: "#000000"
+                            }]
+                        }
+
+                        const config = {
+                            type: "line",
+                            data: data,
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        display: false
+                                    }
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    },
+                                    x: {
+                                        grid: {
+                                            display: false
+                                        }
+                                    }
+                                },
+                                interaction: {
+                                    intersect: false
+                                }
+                            }
+                        }
+
+                        new Chart (id = matrix + "-chart",
+                            config)
+
+                    }
+
+
+                }
+
+                ex_4_chart(); // Call function                
+
+            </script>
+
+        </div>
+
+    </div>
+
+    <script src = "menu-navigation.js"></script>
+
+</body>
+</html>

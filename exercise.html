@@ -127,12 +127,12 @@
             <p>Now we will use chart.js to style our graph by making the following changes:</p>
 
             <ol>
-                <li>Make the y-axis always start at zero</li>
-                <li>Remove the legend</li>
-                <li>Colour the line and points black</li>
-                <li>Resize the chart to be 700px wide and 500px tall</li>
-                <li>Remove the vertical gridlines</li>
-                <li>Make the tooltip show data at the closest point to the cursor</li>
+                <li>Make the y-axis always start at zero (<a href = "https://www.chartjs.org/docs/latest/axes/cartesian/linear.html#linear-axis-specific-options" target = "_blank">Chart.js documentation</a>)</li>
+                <li>Remove the legend (<a href = "https://www.chartjs.org/docs/latest/configuration/legend.html" target = "_blank">Chart.js documentation</a>)</li>
+                <li>Colour the line and points black (<a href = "https://www.chartjs.org/docs/latest/charts/line.html#dataset-properties" target = "_blank">Chart.js documentation</a>)</li>
+                <li>Resize the chart to be 700px wide and 500px tall (<a href = "https://www.chartjs.org/docs/latest/configuration/responsive.html" target = "_blank">Chart.js documentation</a>)</li>
+                <li>Remove the vertical gridlines (<a href = "https://www.chartjs.org/docs/latest/axes/styling.html#grid-line-configuration" target = "_blank">Chart.js documentation</a>)</li>
+                <li>Make the tooltip show data at the closest point to the cursor (<a href = "https://www.chartjs.org/docs/latest/configuration/tooltip.html" target = "_blank">Chart.js documentation</a>)</li>
                 <li>Display a title and axis label using metadata from the dataportal</li>
             </ol>            
 
@@ -356,6 +356,53 @@
 
                         new Chart (id = matrix + "-chart",
                             config)
+
+                    }
+
+                    // Now we can loop through hexagons and click on them to show charts and other information
+                    hexagons = document.getElementsByClassName("hex-container")
+
+                    for (let i = 0; i < hexagons.length; i ++) {
+
+                        // Create an onclick event for each heaxagon
+                        hexagons[i].onclick = function() {
+
+                            // Show the indicator screen if hidden
+                            
+
+                            // An array of all charts
+                            charts = []
+
+                            // Hide any charts already visible
+                            for (let j = 0; j < charts.length; j ++) {
+                                charts[j].style.display = "none";
+                            }
+                        
+                            // Display the chart which matches the hexagon clicked on
+                            document.getElementById(hexagons[i].id.replace("hex", "container")).style.display = "block";
+
+                            // Derive indicator name from hexagon clicked
+                            indicator_name = ""
+
+                            // Derive indicator key using indicator_name
+                            indicator = {}
+
+                            // Update text content around the page using information in the local data
+                            document.getElementById("ex-4-title").textContent = ""
+                            document.getElementById("ex-4-y-label").textContent = ""
+                            document.getElementById("ex-4-important").textContent = ""
+                            document.getElementById("source-info").innerHTML = "The source for this indicator is the <a href = '" + indicator.source_link + "' target = '_blank'>" + indicator.source + "</a>";
+
+                            // Update "What is this telling us" based on positive/negative/no change performance
+                            if (hexagons[i].firstChild.classList.contains("positive")) {
+                                document.getElementById("telling").textContent = ""
+                            } else if (hexagons[i].firstChild.classList.contains("negative")) {
+                                document.getElementById("telling").textContent = "Things have worsened since the base year. " + indicator.telling.worsened;
+                            } else {
+                                document.getElementById("telling").textContent = "Things have not changed since the base year. " + indicator.telling.no_change;
+                            }
+
+                        }
 
                     }
 
